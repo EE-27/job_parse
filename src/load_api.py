@@ -13,6 +13,7 @@ class LoadApi(ABC):
 class HeadHunter_API(LoadApi):
 
     def __init__(self):
+        self.data = None
         self.url = 'https://api.hh.ru/'
         self.endpoint = 'vacancies'  # Указываем эндпоинт для запроса вакансий
         self.params = {'text': 'менеджер'}  #: 'менеджер'}  # , 'page': 1, 'per_page': 10}
@@ -21,10 +22,11 @@ class HeadHunter_API(LoadApi):
 
     def load(self):
         if self.response.status_code == 200:
-            data = self.response.json()
-            print(data)
+            self.data = self.response.json()
+            # print(data)
+            # return data
         else:
-            print(f"Error when requesting data. Status code: {self.response.status_code}")
+            return (f"Error when requesting data. Status code: {self.response.status_code}")
 
 
 class SuperJob_API(LoadApi):
@@ -41,19 +43,25 @@ class SuperJob_API(LoadApi):
         }
 
         self.response = requests.request("GET", self.sj_url, headers=headers, data=payload)
+
     def load(self):
         if self.response.status_code == 200:
             data = self.response.json()
-            print(data)
+            return data
         else:
-            print(f"Error when requesting data. Status code: {self.response.status_code}")
+            return f"Error when requesting data. Status code: {self.response.status_code}"
 
 
 def loading(api):
     api.load()
 
-hh_api = HeadHunter_API()
-sj_api = SuperJob_API()
 
-loading(sj_api)
-loading(hh_api)
+# hh_api = HeadHunter_API()
+# sj_api = SuperJob_API()
+#
+# loading(hh_api)
+# for k in hh_api.data:
+#     print(k)
+# print(hh_api.data)
+
+#  loading(sj_api)
