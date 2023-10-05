@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "job-parse"
+version = "0.1.0"
+description = ""
+authors = ["JL34 <johnny2791@seznam.cz>"]
+readme = "README.md"
+packages = [{include = "job_parse"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = "^2.31.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
