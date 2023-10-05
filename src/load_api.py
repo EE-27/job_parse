@@ -15,7 +15,7 @@ class HeadHunter_API(LoadApi):
     def __init__(self):
         self.data = None
         self.url = 'https://api.hh.ru/'
-        self.endpoint = 'vacancies'  # Указываем эндпоинт для запроса вакансий
+        self.endpoint = 'vacancies'
         self.params = {'text': 'менеджер'}  #: 'менеджер'}  # , 'page': 1, 'per_page': 10}
 
         self.response = requests.get(f'{self.url}{self.endpoint}', params=self.params)
@@ -23,8 +23,8 @@ class HeadHunter_API(LoadApi):
     def load(self):
         if self.response.status_code == 200:
             self.data = self.response.json()
-            # print(data)
-            # return data
+            #  print(self.data)
+            return self.data
         else:
             return (f"Error when requesting data. Status code: {self.response.status_code}")
 
@@ -32,22 +32,29 @@ class HeadHunter_API(LoadApi):
 class SuperJob_API(LoadApi):
 
     def __init__(self):
+        self.data = None
         self.sj_url = "https://api.superjob.ru/2.0/vacancies/"
         self.key = os.getenv("API_SuperJob")
 
+        self.keyword = "менеджер"
+
         payload = {}
+
+        params = {'keyword': {self.keyword}}
+
         headers = {
+            "Host": "api.superjob.ru",  # added
             "X-Api-App-Id": self.key,
             "Authorization": "Bearer r.000000010000001.example.access_token",
             "Content-Type": "application/x-www-form-urlencoded"
         }
 
-        self.response = requests.request("GET", self.sj_url, headers=headers, data=payload)
+        self.response = requests.request("GET", self.sj_url, headers=headers, params=params, data=payload)
 
     def load(self):
         if self.response.status_code == 200:
-            data = self.response.json()
-            return data
+            self.data = self.response.json()
+            return self.data
         else:
             return f"Error when requesting data. Status code: {self.response.status_code}"
 
@@ -55,13 +62,3 @@ class SuperJob_API(LoadApi):
 def loading(api):
     api.load()
 
-
-# hh_api = HeadHunter_API()
-# sj_api = SuperJob_API()
-#
-# loading(hh_api)
-# for k in hh_api.data:
-#     print(k)
-# print(hh_api.data)
-
-#  loading(sj_api)
