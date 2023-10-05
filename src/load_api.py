@@ -12,11 +12,12 @@ class LoadApi(ABC):
 
 class HeadHunter_API(LoadApi):
 
-    def __init__(self):
+    def __init__(self, keyword):
         self.data = None
         self.url = 'https://api.hh.ru/'
         self.endpoint = 'vacancies'
-        self.params = {'text': 'менеджер'}  #: 'менеджер'}  # , 'page': 1, 'per_page': 10}
+        self.keyword = keyword  # "менеджер"
+        self.params = {'text': self.keyword}  #: 'менеджер'}
 
         self.response = requests.get(f'{self.url}{self.endpoint}', params=self.params)
 
@@ -31,12 +32,12 @@ class HeadHunter_API(LoadApi):
 
 class SuperJob_API(LoadApi):
 
-    def __init__(self):
+    def __init__(self, keyword):
         self.data = None
         self.sj_url = "https://api.superjob.ru/2.0/vacancies/"
         self.key = os.getenv("API_SuperJob")
 
-        self.keyword = "менеджер"
+        self.keyword = keyword  # "менеджер"
 
         payload = {}
 
@@ -61,4 +62,3 @@ class SuperJob_API(LoadApi):
 
 def loading(api):
     api.load()
-
