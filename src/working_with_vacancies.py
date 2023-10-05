@@ -21,7 +21,8 @@ class Json_JobDataHandler(JobDataHandler_abs):
 
 class JobOffer:
 
-    def __init__(self, name,job_id, url, requirement, responsibility, salary_from=None, salary_to=None, salary_currency=None):
+    def __init__(self, name, job_id, url, requirement, responsibility, salary_from=None, salary_to=None,
+                 salary_currency=None):
         self.job_id = job_id
         self.name = name
         self.salary_from = salary_from
@@ -34,24 +35,17 @@ class JobOffer:
     def max_pay(self):
         return self.salary_from
 
+# "менеджер", "повар", "программист", "Курьер",
+keyword = "Курьер"
 
-hh_api = HeadHunter_API()
-sj_api = SuperJob_API()
-
+hh_api = HeadHunter_API(keyword)
+sj_api = SuperJob_API(keyword)
 
 loading(hh_api)
 loading(sj_api)
 
-
-var = hh_api.data
-###
-# print(var)
-
 jobs = []
 
-vor = sj_api.data
-###
-# print(vor)
 for object in sj_api.data["objects"]:
     job_id = object["id"]
     name = object["profession"]
@@ -63,9 +57,9 @@ for object in sj_api.data["objects"]:
     salary_to = object["payment_to"]
     salary_currency = object["currency"]
 
-    job = JobOffer(name, int(job_id),url,requirement,responsibility, salary_from, salary_to,str(salary_currency).upper())
+    job = JobOffer(name, int(job_id), url, requirement, responsibility, salary_from, salary_to,
+                   str(salary_currency).upper())
     jobs.append(job)
-
 
 for item in hh_api.data["items"]:
     job_id = item["id"]
@@ -83,7 +77,7 @@ for item in hh_api.data["items"]:
         salary_to = None
         salary_currency = None
 
-    job = JobOffer(name,int(job_id), url, requirement, responsibility, salary_from, salary_to, salary_currency)
+    job = JobOffer(name, int(job_id), url, requirement, responsibility, salary_from, salary_to, salary_currency)
     jobs.append(job)
 
 jobs_with_salary = []
@@ -105,9 +99,11 @@ def maximum():
 
     if jobs_with_salary:
         max_job = max(jobs_with_salary, key=lambda mj: mj.max_pay())
-        print(f"The job with the highest salary is: {max_job.name};{max_job.job_id} - {max_job.salary_from} {max_job.salary_currency}")
+        print(
+            f"The job with the highest salary is: {max_job.name};{max_job.job_id} - {max_job.salary_from} {max_job.salary_currency}")
     else:
         print("No jobs with salary information found.")
 
+
 ###
-maximum()
+
