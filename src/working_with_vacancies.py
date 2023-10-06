@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 import re
 
 
-
 class JobDataHandler_abs(ABC):
     @abstractmethod
     def add_job(self, job):
@@ -36,7 +35,7 @@ class Json_JobDataHandler(JobDataHandler_abs):
                 one_job = json.loads(line)
                 self.jobs_in_json.append(one_job)
 
-            return  self.jobs_in_json
+            return self.jobs_in_json
 
     def filter_jobs_salary(self, json_data, salary_from, salary_to):
         self.filtered = []
@@ -68,8 +67,17 @@ class JobOffer:
         self.requirement = requirement
         self.responsibility = responsibility
 
-    def max_pay(self):
-        return self.salary_from
+    @staticmethod
+    def max_pay(jobs):
+        jobs_with_salary = [job for job in jobs if job.salary_from is not None]
+
+        if jobs_with_salary:
+            max_job = max(jobs_with_salary, key=lambda job: job.salary_from)
+            return (
+                f"The job with the highest salary is: {max_job.name};{max_job.job_id} - {max_job.salary_from} {max_job.salary_currency}"
+            )
+        else:
+            return "No jobs with salary information found."
 
     def __str__(self):
         job_info = f"Job ID: {self.job_id}\nName: {self.name}\nURL: {self.url}\n"
@@ -78,7 +86,7 @@ class JobOffer:
         # requirement_info = f"Requirements: {self.requirement}\n"
         # responsibility_info = f"Responsibilities: {self.responsibility}\n"
 
-        return f"{job_info}{salary_info}\n" #  {requirement_info}{responsibility_info}"
+        return f"{job_info}{salary_info}\n"  # {requirement_info}{responsibility_info}"
 
 
 # "менеджер", "повар", "программист", "Курьер",
@@ -94,8 +102,9 @@ data_sj = sj_api.data
 data_hh = hh_api.data
 
 jobs = []
-def job_filling_sj(data_sj):
 
+
+def job_filling_sj(data_sj):
     for object in data_sj["objects"]:
         job_id = object["id"]
         name = object["profession"]
@@ -138,12 +147,14 @@ def job_filling_hh(data_hh):
         jobs.append(job)
     return jobs
 
+
 # job_filling_hh(data_hh)
 # job_filling_sj(data_sj)
 
 jobs_with_salary = []
 
 job_handle = Json_JobDataHandler("jobs.json")
+
 
 # # tohle maže vše v jobs.json, takže nemusím řešit duplicity
 # with open('jobs.json', 'w', encoding='utf-8'):
@@ -180,4 +191,6 @@ def maximum():
     # else:
     #     print("No jobs with salary information found.")
 
+
 ###
+print(JobOffer.max_pay(jobs))

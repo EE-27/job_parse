@@ -1,9 +1,7 @@
 from working_with_vacancies import *
 
-maximum()
-
-
 # working with user
+
 
 class PickApi:
 
@@ -15,8 +13,8 @@ class PickApi:
             pass
 
         print("Hello, from which site would you like to see the vacancies?")
-        print("Press 1 for HeadHunter.")
-        print("Press 2 for SuperJob.")
+        print("Press '1' for HeadHunter.")
+        print("Press '2' for SuperJob.")
         print("Press 'Enter' if you want both.")
 
         api = input()
@@ -63,6 +61,7 @@ class PickTopJobs(PickApi):
                 jobs_with_salary.append(job)
         while True:
             try:
+                print("Filtering job by salary, if job does not have salary, its omitted.")
                 top_n = int(input("How many top jobs do you want to see (filtered by salary)? "))
                 break
             except ValueError:
@@ -71,9 +70,34 @@ class PickTopJobs(PickApi):
         top_jobs = sorted_jobs[:top_n]
         print(f"Top-{top_n} jobs:")
         for i, job in enumerate(top_jobs):
-            print(f"{i + 1}. {job.name};{job.job_id} - {job.salary_from} {job.salary_currency}")
+            print(f"{i + 1}. {job.name};#{job.job_id} - {job.salary_from} {job.salary_currency}")
+
+
+class PickTopJobs2:
+    def __init__(self):
+        jobs_with_salary = []
+        for job in jobs:
+            if job.salary_from is not None:
+                jobs_with_salary.append(job)
+        while True:
+            try:
+                print("Filtering job by salary, if job does not have salary, its omitted.")
+                top_n = int(input("How many top jobs do you want to see (filtered by salary)? "))
+                break
+            except ValueError:
+                print("Invalid input. Please enter a valid number.")
+        sorted_jobs = sorted(jobs_with_salary, key=lambda job: job.salary_from, reverse=True)
+        top_jobs = sorted_jobs[:top_n]
+        print(f"Top-{top_n} jobs:")
+        for i, job in enumerate(top_jobs):
+            print(f"{i + 1}. {job.name};#{job.job_id} - {job.salary_from} {job.salary_currency}")
+
 
 
 # "менеджер", "повар", "программист", "Курьер",
 
-user = PickTopJobs()
+
+PickApi()
+PickTopJobs2()
+
+print(JobOffer.max_pay(jobs))
