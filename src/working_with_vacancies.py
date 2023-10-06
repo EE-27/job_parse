@@ -4,14 +4,17 @@ from abc import ABC, abstractmethod
 import re
 
 
+
 class JobDataHandler_abs(ABC):
     @abstractmethod
     def add_job(self, job):
         pass
 
+    @abstractmethod
     def read_jobs(self):
         pass
 
+    @abstractmethod
     def filter_jobs_salary(self, json_data, salary_from, salary_to):
         pass
 
@@ -67,6 +70,9 @@ class JobOffer:
     def max_pay(self):
         return self.salary_from
 
+    def __str__(self):
+        pass
+
 
 # "менеджер", "повар", "программист", "Курьер",
 keyword = "Курьер"
@@ -77,45 +83,49 @@ sj_api = SuperJob_API(keyword)
 loading(hh_api)
 loading(sj_api)
 
+data_sj = sj_api.data
+data_hh = hh_api.data
+
 jobs = []
+def job_filling_sj(data_sj):
 
-for object in sj_api.data["objects"]:
-    job_id = object["id"]
-    name = object["profession"]
-    url = object["link"]
-    requirement = object["candidat"]
-    responsibility = object["vacancyRichText"]
+    for object in data_sj["objects"]:
+        job_id = object["id"]
+        name = object["profession"]
+        url = object["link"]
+        requirement = object["candidat"]
+        responsibility = object["vacancyRichText"]
 
-    # removing html tags
-    html_tags_pattern = r'<.*?>'
-    responsibility = re.sub(html_tags_pattern, '', responsibility)
+        # removing html tags
+        html_tags_pattern = r'<.*?>'
+        responsibility = re.sub(html_tags_pattern, '', responsibility)
 
-    salary_from = object["payment_from"]
-    salary_to = object["payment_to"]
-    salary_currency = object["currency"]
+        salary_from = object["payment_from"]
+        salary_to = object["payment_to"]
+        salary_currency = object["currency"]
 
-    job = JobOffer(name, int(job_id), url, requirement, responsibility, salary_from, salary_to,
-                   str(salary_currency).upper())
-    jobs.append(job)
+        job = JobOffer(name, int(job_id), url, requirement, responsibility, salary_from, salary_to,
+                       str(salary_currency).upper())
+        jobs.append(job)
+def job_filling_hh(data_hh):
+    for item in data_hh["items"]:
+        job_id = item["id"]
+        name = item["name"]
+        url = item["alternate_url"]
+        requirement = item["snippet"]["requirement"]
+        responsibility = item["snippet"]["responsibility"]
 
-for item in hh_api.data["items"]:
-    job_id = item["id"]
-    name = item["name"]
-    url = item["alternate_url"]
-    requirement = item["snippet"]["requirement"]
-    responsibility = item["snippet"]["responsibility"]
+        if "salary" in item and item["salary"]:
+            salary_from = item["salary"]["from"]
+            salary_to = item["salary"]["to"]
+            salary_currency = item["salary"]["currency"]
+        else:
+            salary_from = None
+            salary_to = None
+            salary_currency = None
 
-    if "salary" in item and item["salary"]:
-        salary_from = item["salary"]["from"]
-        salary_to = item["salary"]["to"]
-        salary_currency = item["salary"]["currency"]
-    else:
-        salary_from = None
-        salary_to = None
-        salary_currency = None
-
-    job = JobOffer(name, int(job_id), url, requirement, responsibility, salary_from, salary_to, salary_currency)
-    jobs.append(job)
+        job = JobOffer(name, int(job_id), url, requirement, responsibility, salary_from, salary_to, salary_currency)
+        jobs.append(job)
 
 jobs_with_salary = []
 
@@ -133,27 +143,27 @@ for job in jobs:
 (job_handle.read_jobs())
 
 # filtering jobs based of min/max salary
-(job_handle.filter_jobs_salary(job_handle.jobs_in_json,1000,9999999))
-for jab in job_handle.filtered:
-    name = jab["name"]
-    sl_fr = jab["salary_from"]
-    sl_to = jab["salary_to"]
-    cur = jab["salary_currency"]
-    if sl_to == None:
-        print(f"{name}: {sl_fr} {cur} ")
-    else:
-        print(f"{name}: {sl_fr}-{sl_to} {cur} ")
+# (job_handle.filter_jobs_salary(job_handle.jobs_in_json,100000,9999999))
+# for filtered_job in job_handle.filtered:
+#     name = filtered_job["name"]
+#     min_salary = filtered_job["salary_from"]
+#     max_salary = filtered_job["salary_to"]
+#     currency = filtered_job["salary_currency"]
+#     if max_salary is None:
+#         print(f"{name}: {min_salary} {currency} ")
+#     else:
+#         print(f"{name}: {min_salary}-{max_salary} {currency} ")
 
 def maximum():
     for job in jobs:
         if job.salary_from is not None:
             jobs_with_salary.append(job)
 
-    if jobs_with_salary:
-        max_job = max(jobs_with_salary, key=lambda mj: mj.max_pay())
-        print(
-            f"The job with the highest salary is: {max_job.name};{max_job.job_id} - {max_job.salary_from} {max_job.salary_currency}")
-    else:
-        print("No jobs with salary information found.")
+    # if jobs_with_salary:
+    #     max_job = max(jobs_with_salary, key=lambda mj: mj.max_pay())
+    #     print(
+    #         f"The job with the highest salary is: {max_job.name};{max_job.job_id} - {max_job.salary_from} {max_job.salary_currency}")
+    # else:
+    #     print("No jobs with salary information found.")
 
 ###
