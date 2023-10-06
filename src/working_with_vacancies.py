@@ -25,6 +25,7 @@ class Json_JobDataHandler(JobDataHandler_abs):
 
     def add_job(self, job):
         with open(self.file_path, "a", encoding='utf-8') as file:
+            #  json.dump(job, file, ensure_ascii=False)
             json.dump(job.__dict__, file, ensure_ascii=False)
             file.write('\n')
 
@@ -71,7 +72,13 @@ class JobOffer:
         return self.salary_from
 
     def __str__(self):
-        pass
+        job_info = f"Job ID: {self.job_id}\nName: {self.name}\nURL: {self.url}\n"
+        salary_info = f"Salary: {self.salary_from} {self.salary_currency}" if self.salary_from else ("Salary: Not "
+                                                                                                     "specified")
+        # requirement_info = f"Requirements: {self.requirement}\n"
+        # responsibility_info = f"Responsibilities: {self.responsibility}\n"
+
+        return f"{job_info}{salary_info}\n" #  {requirement_info}{responsibility_info}"
 
 
 # "менеджер", "повар", "программист", "Курьер",
@@ -107,6 +114,9 @@ def job_filling_sj(data_sj):
         job = JobOffer(name, int(job_id), url, requirement, responsibility, salary_from, salary_to,
                        str(salary_currency).upper())
         jobs.append(job)
+    return jobs
+
+
 def job_filling_hh(data_hh):
     for item in data_hh["items"]:
         job_id = item["id"]
@@ -126,21 +136,25 @@ def job_filling_hh(data_hh):
 
         job = JobOffer(name, int(job_id), url, requirement, responsibility, salary_from, salary_to, salary_currency)
         jobs.append(job)
+    return jobs
+
+# job_filling_hh(data_hh)
+# job_filling_sj(data_sj)
 
 jobs_with_salary = []
 
 job_handle = Json_JobDataHandler("jobs.json")
 
-#  tohle maže vše v jobs.json, takže nemusím řešit duplicity
-with open('jobs.json', 'w', encoding='utf-8'):
-    pass
+# # tohle maže vše v jobs.json, takže nemusím řešit duplicity
+# with open('jobs.json', 'w', encoding='utf-8'):
+#     pass
 
-# adding jobs into json
-for job in jobs:
-    job_handle.add_job(job)
+# # adding jobs into json
+# for job in jobs:
+#     job_handle.add_job(job)
 
-# reading jobs in json
-(job_handle.read_jobs())
+# # reading jobs in json
+# (job_handle.read_jobs())
 
 # filtering jobs based of min/max salary
 # (job_handle.filter_jobs_salary(job_handle.jobs_in_json,100000,9999999))
