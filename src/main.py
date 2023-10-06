@@ -28,8 +28,7 @@ class PickApi:
             job_filling_hh(hh_api.data)
             for job in jobs:
                 job_handle.add_job(job)
-            for job in jobs:
-                print(job)
+
 
         elif api == "2":
             print("You chose SuperJob!")
@@ -39,8 +38,7 @@ class PickApi:
             job_filling_sj(sj_api.data)
             for job in jobs:
                 job_handle.add_job(job)
-            for job in jobs:
-                print(job)
+
 
         else:
             print("You chose both!")
@@ -53,13 +51,27 @@ class PickApi:
             job_filling_sj(sj_api.data)
             for job in jobs:
                 job_handle.add_job(job)
-            for job in jobs:
-                print(job)
+
 
 
 class PickTopJobs(PickApi):
     def __init__(self):
         super().__init__()
+        jobs_with_salary = []
+        for job in jobs:
+            if job.salary_from is not None:
+                jobs_with_salary.append(job)
+        while True:
+            try:
+                top_n = int(input("How many top jobs do you want to see (filtered by salary)? "))
+                break
+            except ValueError:
+                print("Invalid input. Please enter a valid number.")
+        sorted_jobs = sorted(jobs_with_salary, key=lambda job: job.salary_from, reverse=True)
+        top_jobs = sorted_jobs[:top_n]
+        print(f"Top-{top_n} jobs:")
+        for i, job in enumerate(top_jobs):
+            print(f"{i + 1}. {job.name};{job.job_id} - {job.salary_from} {job.salary_currency}")
 
 
 # "менеджер", "повар", "программист", "Курьер",
