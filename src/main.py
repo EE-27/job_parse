@@ -12,11 +12,6 @@ class PickApi:
         with open('jobs.json', 'w', encoding='utf-8'):
             pass
 
-        print("Hello, from which site would you like to see the vacancies?")
-        print("Press '1' for HeadHunter.")
-        print("Press '2' for SuperJob.")
-        print("Press 'Enter' if you want both.")
-
         api = input()
         if api == "1":
             print("You chose HeadHunter!")
@@ -52,9 +47,29 @@ class PickApi:
 
 
 
-class PickTopJobs(PickApi):
+# class PickTopJobs(PickApi):
+#     def __init__(self):
+#         super().__init__()
+#         jobs_with_salary = []
+#         for job in jobs:
+#             if job.salary_from is not None:
+#                 jobs_with_salary.append(job)
+#         while True:
+#             try:
+#                 print("Filtering job by salary, if job does not have salary, its omitted.")
+#                 top_n = int(input("How many top jobs do you want to see (filtered by salary)? "))
+#                 break
+#             except ValueError:
+#                 print("Invalid input. Please enter a valid number.")
+#         sorted_jobs = sorted(jobs_with_salary, key=lambda job: job.salary_from, reverse=True)
+#         top_jobs = sorted_jobs[:top_n]
+#         print(f"Top-{top_n} jobs:")
+#         for i, job in enumerate(top_jobs):
+#             print(f"{i + 1}. {job.name};#{job.job_id} - {job.salary_from} {job.salary_currency}")
+
+
+class PickTop_N_Jobs:
     def __init__(self):
-        super().__init__()
         jobs_with_salary = []
         for job in jobs:
             if job.salary_from is not None:
@@ -72,32 +87,76 @@ class PickTopJobs(PickApi):
         for i, job in enumerate(top_jobs):
             print(f"{i + 1}. {job.name};#{job.job_id} - {job.salary_from} {job.salary_currency}")
 
+class WriteJob:
 
-class PickTopJobs2:
     def __init__(self):
-        jobs_with_salary = []
-        for job in jobs:
-            if job.salary_from is not None:
-                jobs_with_salary.append(job)
-        while True:
-            try:
-                print("Filtering job by salary, if job does not have salary, its omitted.")
-                top_n = int(input("How many top jobs do you want to see (filtered by salary)? "))
-                break
-            except ValueError:
-                print("Invalid input. Please enter a valid number.")
-        sorted_jobs = sorted(jobs_with_salary, key=lambda job: job.salary_from, reverse=True)
-        top_jobs = sorted_jobs[:top_n]
-        print(f"Top-{top_n} jobs:")
-        for i, job in enumerate(top_jobs):
-            print(f"{i + 1}. {job.name};#{job.job_id} - {job.salary_from} {job.salary_currency}")
+        with open("jobs.json", "r", encoding='utf-8') as file:
+            print("Write 'job_id' of a job you want to add")
+            user_job_id = input()
+            for line in file:
+                try:
+                    user_job_id = int(user_job_id)
+                except ValueError:
+                    print("Invalid input. Please enter a valid job_id (a number).")
+                    continue
 
+                line_data = json.loads(line)
+                # print(f"Line data: {line_data}")
+                # print(f"Job ID from JSON: {line_data.get('job_id')}")
+                # print(f"User input job_id: {user_job_id}")
 
+                if line_data.get("job_id") == user_job_id:
+                    with open("user.txt", "a", encoding='utf-8') as my_file:
+                        my_file.write(str(line_data))
+                        my_file.write("\n")
+                    break
+            else:
+                print(f"No job found with job_id {user_job_id} in the JSON file.")
 
 # "менеджер", "повар", "программист", "Курьер",
 
+# Select site and proffesion
+print("Hello, from which site would you like to see the vacancies?")
+print("Press '1' for HeadHunter.")
+print("Press '2' for SuperJob.")
+print("Press 'Enter' if you want both.")
 
 PickApi()
-PickTopJobs2()
 
-print(JobOffer.max_pay(jobs))
+# Select how many top jobs to show
+print("Do you want to see top_'N' jobs, filtered by salary?")
+print("Press '1' for 'yes'.")
+print("Press 'Enter' for 'no!. ")
+user_pick_topn = input()
+if user_pick_topn == "1":
+    PickTop_N_Jobs()
+
+# Select if you want to see the highest paying job
+print("Do you want to see the highest paying job?")
+print("Press '1' for 'yes'.")
+print("Press 'Enter' for 'no!. ")
+user_pick_max = input()
+if user_pick_max == "1":
+    print(JobOffer.max_pay(jobs))
+
+# Watch all jobs without filter
+print("Do you want to see all the jobs without filter? (max 40)")
+print("Press '1' for 'yes'.")
+print("Press 'Enter' for 'no!. ")
+user_pick_list = input()
+if user_pick_list == "1":
+    for job in jobs:
+        print(job)
+
+# Write in your own file
+print("Do you want add job into your own file?")
+print("Press '1' for 'yes'.")
+print("Press 'Enter' for 'no!. ")
+user_pick_write = input()
+if user_pick_write == "1":
+    while True:
+        WriteJob()
+        print("Do you want to add another? Press '1' for 'yes'/anything else for 'no'.")
+        user_pick_write = input()
+        if user_pick_write != "1":
+            break

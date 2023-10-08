@@ -69,7 +69,11 @@ class JobOffer:
 
     @staticmethod
     def max_pay(jobs):
-        jobs_with_salary = [job for job in jobs if job.salary_from is not None]
+        #  jobs_with_salary = [job for job in jobs if job.salary_from is not None]
+        jobs_with_salary = []
+        for job in jobs:
+            if job.salary_from is not None:
+                jobs_with_salary.append(job)
 
         if jobs_with_salary:
             max_job = max(jobs_with_salary, key=lambda job: job.salary_from)
@@ -193,4 +197,4 @@ def maximum():
 
 
 ###
-print(JobOffer.max_pay(jobs))
+#  print(JobOffer.max_pay(jobs))
