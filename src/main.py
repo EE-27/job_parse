@@ -101,9 +101,6 @@ class WriteJob:
                     continue
 
                 line_data = json.loads(line)
-                # print(f"Line data: {line_data}")
-                # print(f"Job ID from JSON: {line_data.get('job_id')}")
-                # print(f"User input job_id: {user_job_id}")
 
                 if line_data.get("job_id") == user_job_id:
                     with open("user.txt", "a", encoding='utf-8') as my_file:
@@ -113,50 +110,103 @@ class WriteJob:
             else:
                 print(f"No job found with job_id {user_job_id} in the JSON file.")
 
+class DeleteJob:
+    def __init__(self):
+        file_name = "user.txt"
+        with open(file_name, "r", encoding='utf-8') as my_file:
+            print("You have saved this job offers: ")
+            for line in my_file:
+                parts = line.split(",")
+                job_id = parts[0][-8:]
+                job_name = parts[1][9:]
+
+                print(f"Job_id: {job_id} - {job_name}")
+        print("Which job do you want to erase? Write only job_id.")
+        user_job_id = input("job_id: ")
+
+        with open(file_name, "r", encoding="utf-8") as my_file:
+            lines = my_file.readlines()
+            found = False
+            filtered_lines = []
+
+            for line in lines:
+                parts = line.split(",")
+                job_id = parts[0][-8:]
+
+                if job_id == str(user_job_id):
+                    found = True
+
+                else:
+                    filtered_lines.append(line)
+
+        with open(file_name, "w", encoding="utf-8") as my_file:
+            my_file.writelines(filtered_lines)
+
+        if found:
+            print(f"Line with job_id {user_job_id} deleted from the file.")
+        else:
+            print(f"No line found with job_id {user_job_id}.")
+
+
 # "менеджер", "повар", "программист", "Курьер",
+class User:
+    def __init__(self):
+        # Select site and proffesion
+        print("Hello, from which site would you like to see the vacancies?")
+        print("Press '1' for HeadHunter.")
+        print("Press '2' for SuperJob.")
+        print("Press 'Enter' if you want both.")
 
-# Select site and proffesion
-print("Hello, from which site would you like to see the vacancies?")
-print("Press '1' for HeadHunter.")
-print("Press '2' for SuperJob.")
-print("Press 'Enter' if you want both.")
+        PickApi()
 
-PickApi()
+        # Select how many top jobs to show
+        print("Do you want to see top_'N' jobs, filtered by salary?")
+        print("Press '1' for 'yes'.")
+        print("Press 'Enter' for 'no!. ")
+        user_pick_topn = input()
+        if user_pick_topn == "1":
+            PickTop_N_Jobs()
 
-# Select how many top jobs to show
-print("Do you want to see top_'N' jobs, filtered by salary?")
-print("Press '1' for 'yes'.")
-print("Press 'Enter' for 'no!. ")
-user_pick_topn = input()
-if user_pick_topn == "1":
-    PickTop_N_Jobs()
+        # Select if you want to see the highest paying job
+        print("Do you want to see the highest paying job?")
+        print("Press '1' for 'yes'.")
+        print("Press 'Enter' for 'no!. ")
+        user_pick_max = input()
+        if user_pick_max == "1":
+            print(JobOffer.max_pay(jobs))
 
-# Select if you want to see the highest paying job
-print("Do you want to see the highest paying job?")
-print("Press '1' for 'yes'.")
-print("Press 'Enter' for 'no!. ")
-user_pick_max = input()
-if user_pick_max == "1":
-    print(JobOffer.max_pay(jobs))
+        # Watch all jobs without filter
+        print("Do you want to see all the jobs without filter? (max 40)")
+        print("Press '1' for 'yes'.")
+        print("Press 'Enter' for 'no!. ")
+        user_pick_list = input()
+        if user_pick_list == "1":
+            for job in jobs:
+                print(job)
 
-# Watch all jobs without filter
-print("Do you want to see all the jobs without filter? (max 40)")
-print("Press '1' for 'yes'.")
-print("Press 'Enter' for 'no!. ")
-user_pick_list = input()
-if user_pick_list == "1":
-    for job in jobs:
-        print(job)
-
-# Write in your own file
-print("Do you want add job into your own file?")
-print("Press '1' for 'yes'.")
-print("Press 'Enter' for 'no!. ")
-user_pick_write = input()
-if user_pick_write == "1":
-    while True:
-        WriteJob()
-        print("Do you want to add another? Press '1' for 'yes'/anything else for 'no'.")
+        # Write in your own file
+        print("Do you want add job into your own file?")
+        print("Press '1' for 'yes'.")
+        print("Press 'Enter' for 'no!. ")
         user_pick_write = input()
-        if user_pick_write != "1":
-            break
+        if user_pick_write == "1":
+            while True:
+                WriteJob()
+                print("Do you want to add another? Press '1' for 'yes'/ -anything else for 'no'.")
+                user_pick_write = input()
+                if user_pick_write != "1":
+                    break
+
+
+        # Delete in your own file
+        print("Do you want delete job in your own file?")
+        print("Press '1' for 'yes'.")
+        print("Press 'Enter' for 'no!. ")
+        user_pick_delete = input()
+        if user_pick_delete == "1":
+            while True:
+                DeleteJob()
+                print("Do you want to delete another? Press '1' for 'yes'/ -anything else for 'no'.")
+                user_pick_delete = input()
+                if user_pick_delete != "1":
+                    break
