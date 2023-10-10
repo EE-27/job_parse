@@ -5,30 +5,75 @@ import re
 
 
 class JobDataHandler_abs(ABC):
+    """
+    Abstract base class for handling job data, providing methods for adding, reading, and filtering jobs.
+    """
     @abstractmethod
     def add_job(self, job):
+        """
+        Add a job to the data storage.
+
+        Args: job (JobOffer): The job to be added.
+
+        Returns: None
+        """
         pass
 
     @abstractmethod
     def read_jobs(self):
+        """
+        Read and retrieve all jobs from the data storage.
+
+        Returns: list: A list of job data in JSON format.
+        """
         pass
 
     @abstractmethod
     def filter_jobs_salary(self, json_data, salary_from, salary_to):
+         """
+        Filter jobs based on salary range.
+
+        Args:
+            json_data (list): List of job data in JSON format.
+            salary_from (int): Minimum salary value.
+            salary_to (int): Maximum salary value.
+
+        Returns: list: A list of filtered job data in JSON format.
+        """
         pass
 
 
 class Json_JobDataHandler(JobDataHandler_abs):
+    """
+    Class for handling job data in JSON format.
+    """
     def __init__(self, file_path):
+        """
+        Initialize the Json_JobDataHandler.
+
+        Args: file_path (str): The file path where job data will be stored.
+        """
         self.file_path = file_path
 
     def add_job(self, job):
+        """
+        Add a job to the JSON data storage.
+
+        Args: job (JobOffer): The job to be added.
+
+        Returns: None
+        """
         with open(self.file_path, "a", encoding='utf-8') as file:
             #  json.dump(job, file, ensure_ascii=False)
             json.dump(job.__dict__, file, ensure_ascii=False)
             file.write('\n')
 
     def read_jobs(self):
+        """
+        Read and retrieve all jobs from the JSON data storage.
+
+        Returns: list: A list of job data in JSON format.
+        """
         with open(self.file_path, 'r', encoding='utf-8') as file:
             self.jobs_in_json = []
             for line in file:
@@ -38,6 +83,16 @@ class Json_JobDataHandler(JobDataHandler_abs):
             return self.jobs_in_json
 
     def filter_jobs_salary(self, json_data, salary_from, salary_to):
+        """
+        Filter jobs based on salary range.
+
+        Args:
+            json_data (list): List of job data in JSON format.
+            salary_from (int): Minimum salary value.
+            salary_to (int): Maximum salary value.
+
+        Returns: list: A list of filtered job data in JSON format.
+        """
         self.filtered = []
         for job in json_data:
             if dict(job).get("salary_from") == None:
@@ -55,9 +110,25 @@ class Json_JobDataHandler(JobDataHandler_abs):
 
 
 class JobOffer:
+    """
+    Class representing a job offer.
+    """
 
     def __init__(self, name, job_id, url, requirement, responsibility, salary_from=None, salary_to=None,
                  salary_currency=None):
+        """
+        Initialize a JobOffer instance.
+
+        Args:
+            name (str): The name or title of the job.
+            job_id (int): The unique identifier of the job.
+            url (str): The URL to the job posting.
+            requirement (str): The job requirements.
+            responsibility (str): The job responsibilities.
+            salary_from (int, optional): The minimum salary offered by the job. Defaults to None.
+            salary_to (int, optional): The maximum salary offered by the job. Defaults to None.
+            salary_currency (str, optional): The currency of the salary. Defaults to None.
+        """
         self.job_id = job_id
         self.name = name
         self.salary_from = salary_from
@@ -69,6 +140,13 @@ class JobOffer:
 
     @staticmethod
     def max_pay(jobs):
+        """
+        Get the job with the highest salary from a list of jobs.
+
+        Args: jobs (list): List of JobOffer objects.
+
+        Returns: str: A message indicating the job with the highest salary.
+        """
         #  jobs_with_salary = [job for job in jobs if job.salary_from is not None]
         jobs_with_salary = []
         for job in jobs:
@@ -109,6 +187,13 @@ jobs = []
 
 
 def job_filling_sj(data_sj):
+    """
+    Fill the 'jobs' list with job data from SuperJob API response.
+
+    Args: data_sj (dict): SuperJob API response data.
+
+    Returns: list: List of JobOffer objects.
+    """
     for object in data_sj["objects"]:
         job_id = object["id"]
         name = object["profession"]
@@ -131,6 +216,13 @@ def job_filling_sj(data_sj):
 
 
 def job_filling_hh(data_hh):
+    """
+    Fill the 'jobs' list with job data from HeadHunter API response.
+
+    Args: data_hh (dict): HeadHunter API response data.
+
+    Returns: list: List of JobOffer objects.
+    """
     for item in data_hh["items"]:
         job_id = item["id"]
         name = item["name"]
