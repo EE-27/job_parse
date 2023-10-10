@@ -30,7 +30,7 @@ class JobDataHandler_abs(ABC):
 
     @abstractmethod
     def filter_jobs_salary(self, json_data, salary_from, salary_to):
-         """
+        """
         Filter jobs based on salary range.
 
         Args:

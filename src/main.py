@@ -29,7 +29,6 @@ class PickApi:
             for job in jobs:
                 job_handle.add_job(job)
 
-
         elif api == "2":
             print("---")
             print("You chose SuperJob!")
@@ -39,7 +38,6 @@ class PickApi:
             job_filling_sj(sj_api.data)
             for job in jobs:
                 job_handle.add_job(job)
-
 
         else:
             print("---")
@@ -54,10 +52,12 @@ class PickApi:
             for job in jobs:
                 job_handle.add_job(job)
 
+
 class PickTop_N_Jobs:
     """
     Class for filtering and displaying the top N jobs based on salary.
     """
+
     def __init__(self):
         """
         Initializes the PickTop_N_Jobs class and allows the user to specify the number of top jobs to display.
@@ -114,6 +114,7 @@ class DeleteJob:
     """
     Class for deleting a job from the user's own file.
     """
+
     def __init__(self):
         """
         Initializes the DeleteJob class and allows the user to select a job to delete from their file.
@@ -158,10 +159,12 @@ class CompareJob:
     """
     Class for comparing two job offers that the user has saved.
     """
+
     def __init__(self):
         """
         Initializes the CompareJob class and allows the user to select two jobs to compare based on salary.
         """
+
         class Compare:
             def __init__(self, job_id, job_name, job_salary_from, job_salary_to, job_currency):
                 self.job_id = job_id
@@ -231,6 +234,7 @@ class User:
     """
     Class for managing user interactions with the job-related functionality.
     """
+
     def __init__(self):
         """
         Initializes the User class and guides the user through various job-related tasks.
@@ -314,6 +318,3 @@ class User:
                 user_pick_compare = input()
                 if user_pick_compare != "1":
                     break
-
-
-
