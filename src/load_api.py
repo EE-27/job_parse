@@ -4,15 +4,32 @@ from abc import ABC, abstractmethod
 
 
 class LoadApi(ABC):
+    """
+    Abstract base class for API loaders.
+    """
 
     @abstractmethod
     def load(self):
+        """
+        Load data from the API.
+
+        Returns:
+            dict or str: The loaded data from the API if successful, or an error message if the request fails.
+        """
         pass
 
 
 class HeadHunter_API(LoadApi):
+    """
+    API loader for HeadHunter job vacancies.
+    """
 
     def __init__(self, keyword):
+        """
+        Initialize the HeadHunter API loader.
+
+        Args: keyword (str): The keyword to search for in job vacancies.
+        """
         self.data = None
         self.url = 'https://api.hh.ru/'
         self.endpoint = 'vacancies'
@@ -22,6 +39,11 @@ class HeadHunter_API(LoadApi):
         self.response = requests.get(f'{self.url}{self.endpoint}', params=self.params)
 
     def load(self):
+        """
+        Load data from the HeadHunter API.
+
+        Returns: dict or str: The loaded data from the API if successful, or an error message if the request fails.
+        """
         if self.response.status_code == 200:
             self.data = self.response.json()
             #  print(self.data)
@@ -31,8 +53,16 @@ class HeadHunter_API(LoadApi):
 
 
 class SuperJob_API(LoadApi):
+    """
+    API loader for SuperJob job vacancies.
+    """
 
     def __init__(self, keyword):
+        """
+        Initialize the SuperJob API loader.
+
+        Args: keyword (str): The keyword to search for in job vacancies.
+        """
         self.data = None
         self.sj_url = "https://api.superjob.ru/2.0/vacancies/"
         self.key = os.getenv("API_SuperJob")
@@ -53,6 +83,11 @@ class SuperJob_API(LoadApi):
         self.response = requests.request("GET", self.sj_url, headers=headers, params=params, data=payload)
 
     def load(self):
+        """
+        Load data from the SuperJob API.
+
+        Returns: dict or str: The loaded data from the API if successful, or an error message if the request fails.
+        """
         if self.response.status_code == 200:
             self.data = self.response.json()
             return self.data
@@ -61,4 +96,11 @@ class SuperJob_API(LoadApi):
 
 
 def loading(api):
+    """
+    Load data from the specified API.
+
+    Args: api (LoadApi): An instance of a class that implements the LoadApi interface.
+
+    Returns: dict or str: The loaded data from the API if successful, or an error message if the request fails.
+    """
     api.load()
