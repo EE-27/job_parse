@@ -5,8 +5,14 @@ from working_with_vacancies import *
 
 
 class PickApi:
+    """
+    Class for handling user interactions related to selecting and loading job data from APIs.
+    """
 
     def __init__(self):
+        """
+        Initializes the PickApi class and allows the user to choose an API source and a profession to search for.
+        """
 
         job_handle = Json_JobDataHandler("jobs.json")
         with open('jobs.json', 'w', encoding='utf-8'):
@@ -49,7 +55,13 @@ class PickApi:
                 job_handle.add_job(job)
 
 class PickTop_N_Jobs:
+    """
+    Class for filtering and displaying the top N jobs based on salary.
+    """
     def __init__(self):
+        """
+        Initializes the PickTop_N_Jobs class and allows the user to specify the number of top jobs to display.
+        """
         jobs_with_salary = []
         for job in jobs:
             if job.salary_from is not None:
@@ -69,8 +81,14 @@ class PickTop_N_Jobs:
 
 
 class WriteJob:
+    """
+    Class for writing a selected job to the user's own file.
+    """
 
     def __init__(self):
+        """
+        Initializes the WriteJob class and allows the user to select a job to add to their file.
+        """
         with open("jobs.json", "r", encoding='utf-8') as file:
             print("Write 'job_id' of a job you want to add")
             user_job_id = input()
@@ -93,7 +111,13 @@ class WriteJob:
 
 
 class DeleteJob:
+    """
+    Class for deleting a job from the user's own file.
+    """
     def __init__(self):
+        """
+        Initializes the DeleteJob class and allows the user to select a job to delete from their file.
+        """
         file_name = "user.txt"
         with open(file_name, "r", encoding='utf-8') as my_file:
             print("You have saved this job offers: ")
@@ -131,8 +155,13 @@ class DeleteJob:
 
 
 class CompareJob:
-
+    """
+    Class for comparing two job offers that the user has saved.
+    """
     def __init__(self):
+        """
+        Initializes the CompareJob class and allows the user to select two jobs to compare based on salary.
+        """
         class Compare:
             def __init__(self, job_id, job_name, job_salary_from, job_salary_to, job_currency):
                 self.job_id = job_id
@@ -199,7 +228,13 @@ class CompareJob:
 
 # "менеджер", "повар", "программист", "Курьер",
 class User:
+    """
+    Class for managing user interactions with the job-related functionality.
+    """
     def __init__(self):
+        """
+        Initializes the User class and guides the user through various job-related tasks.
+        """
         # Select site and proffesion
 
         print("Press '1' for HeadHunter.")
