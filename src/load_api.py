@@ -49,7 +49,7 @@ class HeadHunter_API(LoadApi):
             #  print(self.data)
             return self.data
         else:
-            return (f"Error when requesting data. Status code: {self.response.status_code}")
+            return f"Error when requesting data. Status code: {self.response.status_code}"
 
 
 class SuperJob_API(LoadApi):
